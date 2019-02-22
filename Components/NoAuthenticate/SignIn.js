@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
+import SignInForm from "./Forms/SignInForm";
 
 class SignIn extends Component {
   render() {
@@ -8,6 +9,7 @@ class SignIn extends Component {
     return (
       <View style={styles.container}>
         <Text> SignIn </Text>
+        <SignInForm />
         <Button
           title="Navegar a SignUp"
           onPress={() => {
