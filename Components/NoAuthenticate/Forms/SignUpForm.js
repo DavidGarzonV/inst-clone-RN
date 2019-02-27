@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, TextInput, Button } from "react-native";
 //importa el elemento field y el reduxform que los conecta con el state
 import { Field, reduxForm } from "redux-form";
+import { autenticacion } from "../../../Store/Servicios/Firebase";
 
 //Pasos para integrar.
 // redux form
@@ -14,26 +15,32 @@ import { Field, reduxForm } from "redux-form";
 
 const fieldNombre = props => {
   //Aqui llegarían tambien los errores del input.
-  console.log(props);
+  console.log("inputs");
 
   //Las props las proporciona el field, al renderizar el elemento
   //La funcion onchange es del field, y cada vez que se ejecuta renderiza el input por si hay cambios.
+  //imput: objeto generado por field.
   return (
-    <View>
-        <TextInput
+    <View style={styles.textInput}>
+      <TextInput
         placeholder={props.ph}
         onChangeText={props.input.onChange}
         value={props.input.value}
-        keyboardType={props.input.name == "correo" ? "email-address" : "default"}
+        keyboardType={
+          props.input.name == "correo" ? "email-address" : "default"
+        }
         autoCapitalize="characters"
         secureTextEntry={
-            !!props.input.name == "password" || props.input.name == "confirmacion"
+          props.input.name == "password" || props.input.name == "confirmacion"? true : false
         }
         //Actualiza las propiedades del componente en el store
-        onBlur={ props.input.onBlur }
-        />
-        {/* touched es cuando se envía, cambia a true */}
-        { props.meta.touched && props.meta.error && <Text>{props.meta.error}</Text> }
+        onBlur={props.input.onBlur}
+      />
+      <View style={styles.linea} />
+      {/* touched es cuando se envía, cambia a true */}
+      {props.meta.touched && props.meta.error && (
+        <Text style={styles.errors}>{props.meta.error}</Text>
+      )}
     </View>
   );
 };
@@ -74,7 +81,7 @@ const validate = values => {
 };
 
 const SignUpForm = props => {
-  console.log(props);
+  console.log("form");
   return (
     <View>
       {/* Field envia valor al store */}
@@ -82,11 +89,22 @@ const SignUpForm = props => {
       <Field name="correo" component={fieldNombre} ph="correo@correo.com" />
       <Field name="password" component={fieldNombre} ph="******" />
       <Field name="confirmacion" component={fieldNombre} ph="******" />
-      <Text>Redux Form</Text>
       <Button
         title="Registrar"
         onPress={props.handleSubmit(values => {
-        //   console.log(values);
+
+            //Si pasa la autenticación llega aqui
+            console.log(values, autenticacion);
+            // Crear auth firebase
+            
+            autenticacion.createUserWithEmailAndPassword(values.correo, values.password).then(function(success){
+                console.log(success);
+            }).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+            });
         })}
       />
     </View>
@@ -94,11 +112,15 @@ const SignUpForm = props => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+  textInput: {
+    marginBottom: 16
+  },
+  linea: {
+    backgroundColor: "#DCDCDC",
+    height: 2
+  },
+  errors: {
+    color: "#FF0000"
   }
 });
 

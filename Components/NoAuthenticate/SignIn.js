@@ -8,7 +8,6 @@ class SignIn extends Component {
 
     return (
       <View style={styles.container}>
-        <Text> SignIn </Text>
         <SignInForm />
         <Button
           title="Navegar a SignUp"
@@ -25,8 +24,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    paddingHorizontal:16
   }
 });
 

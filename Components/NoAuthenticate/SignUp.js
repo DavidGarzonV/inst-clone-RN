@@ -8,21 +8,14 @@ class SignUp extends Component {
   render() {
 
     //propiedad iyectada en el mapStateToProps
-    console.log(this.props.numero);
+    // console.log(this.props.numero);
     const { navigation } = this.props;
 
     return (
       <View style={styles.container}>
-        <Text> SignUp </Text>
-
         <SignUpForm></SignUpForm>
         {/* native input */}
         {/* <TextInput placeholder="Correo electronico" /> */}
-
-        <Button
-          title="Aumentar"
-          onPress={ () => { this.props.aumentar() } }
-        />
         <Button
           title="Regresar a SignIn"
           onPress={() => {
@@ -38,8 +31,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    paddingHorizontal:16
   }
 });
 

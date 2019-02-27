@@ -5,7 +5,7 @@ import { Field, reduxForm } from "redux-form";
 const fieldNombre = props => {
   console.log(props);
   return (
-    <View>
+    <View style={styles.textInput}>
         <TextInput
         placeholder={props.ph}
         onChangeText={props.input.onChange}
@@ -17,7 +17,8 @@ const fieldNombre = props => {
         }
         onBlur={ props.input.onBlur }
         />
-        { props.meta.touched && props.meta.error && <Text>{props.meta.error}</Text> }
+        <View style={styles.linea}></View>
+        { props.meta.touched && props.meta.error && <Text style={styles.errors}>{props.meta.error}</Text> }
     </View>
   );
 };
@@ -50,7 +51,6 @@ const SignInForm = props => {
     <View>
       <Field name="correo" component={fieldNombre} ph="correo@correo.com" />
       <Field name="password" component={fieldNombre} ph="******" />
-      <Text>Redux Form</Text>
       <Button
         title="Iniciar"
         onPress={props.handleSubmit(values => {
@@ -62,12 +62,17 @@ const SignInForm = props => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+  textInput: {
+      marginBottom:16
+  },
+  linea:{
+      backgroundColor:'#DCDCDC',
+      height:2
+  },
+  errors:{
+      color:'#FF0000'
   }
 });
+
 
 export default reduxForm({ form: "SignInForm", validate })(SignInForm);
