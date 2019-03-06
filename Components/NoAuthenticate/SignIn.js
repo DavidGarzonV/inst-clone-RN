@@ -1,14 +1,20 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import SignInForm from "./Forms/SignInForm";
+import { connect } from 'react-redux';
 
 class SignIn extends Component {
+  signInDeUsuario = (values) => {
+    // console.log("sign", values);
+    this.props.login(values);
+  }
+
   render() {
     const { navigation } = this.props;
 
     return (
       <View style={styles.container}>
-        <SignInForm />
+        <SignInForm login={this.signInDeUsuario} />
         <Button
           title="Navegar a SignUp"
           onPress={() => {
@@ -25,8 +31,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "center",
-    paddingHorizontal:16
+    paddingHorizontal: 16
   }
 });
 
-export default SignIn;
+const mapStateToProps = (state) => {
+  return {
+    prop: state.prop
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: (datos) => {
+      dispatch({type:'LOGIN', datos })
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn)

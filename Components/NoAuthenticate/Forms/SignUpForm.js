@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, TextInput, Button } from "react-native";
 //importa el elemento field y el reduxform que los conecta con el state
 import { Field, reduxForm } from "redux-form";
-import { autenticacion } from "../../../Store/Servicios/Firebase";
 
 //Pasos para integrar.
 // redux form
@@ -15,7 +14,7 @@ import { autenticacion } from "../../../Store/Servicios/Firebase";
 
 const fieldNombre = props => {
   //Aqui llegarían tambien los errores del input.
-  console.log("inputs");
+  // console.log("inputs");
 
   //Las props las proporciona el field, al renderizar el elemento
   //La funcion onchange es del field, y cada vez que se ejecuta renderiza el input por si hay cambios.
@@ -81,7 +80,7 @@ const validate = values => {
 };
 
 const SignUpForm = props => {
-  console.log("form");
+  // console.log("form");
   return (
     <View>
       {/* Field envia valor al store */}
@@ -91,21 +90,16 @@ const SignUpForm = props => {
       <Field name="confirmacion" component={fieldNombre} ph="******" />
       <Button
         title="Registrar"
-        onPress={props.handleSubmit(values => {
-
-            //Si pasa la autenticación llega aqui
-            console.log(values, autenticacion);
-            // Crear auth firebase
+        //se envía a la función ubicada en SignUp. los values, funcion pasada por props.
+        onPress={props.handleSubmit(props.registro,
+            // values => {
+              
+            //   //Si pasa la autenticación llega aqui
+            //   console.log(values, autenticacion);
             
-            autenticacion.createUserWithEmailAndPassword(values.correo, values.password).then(function(success){
-                console.log(success);
-            }).catch(function(error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(errorCode, errorMessage);
-            });
-        })}
+            // }
+        )
+      }
       />
     </View>
   );

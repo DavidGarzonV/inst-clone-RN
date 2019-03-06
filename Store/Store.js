@@ -1,5 +1,7 @@
 import { createStore , combineReducers, applyMiddleware } from 'redux';
 import { reducer as form } from 'redux-form';
+import createSagaMiddleware from 'redux-saga';
+import funcionPrimaria from './Sagas/Sagas';
 
 //Return state
 //Los reducer están pendientes al dispatch, al nuevo state
@@ -16,23 +18,8 @@ const reducerPrueba = (state = [0], action) => {
     return state;
 };
 
-// Currying
-// const miMiddleware = (a) => (b) => (c) => a*b*c;
-// miMiddleware(10);
-// miMiddleware(20);
-// miMiddleware(30);
-
-//Cada middleware llama el siguiente, y el ultimo ejecuta el store dispatch para actualizar la información.
-const miMiddleware = store => next => (action) => {
-    console.log("se ejecuta el middleware");
-    //ej: cada onchange es una accion.
-    next(action);
-}
-
-const ultimoMiddleware = store => next => (action) => {
-    console.log("ultimo middleware");
-    next(action);
-}
+//Crear middleware
+const sagaMiddleware = createSagaMiddleware();
 
 //Produce objeto con resultado de reducers, creando arbol de states.
 const reducers = combineReducers({
@@ -43,7 +30,11 @@ const reducers = combineReducers({
 });
 
 //Redux store
-//Middleware importar y configurar a la store
-const store = createStore(reducers, applyMiddleware(miMiddleware,ultimoMiddleware));
+//Utilizar middleware
+const store = createStore(reducers, applyMiddleware(sagaMiddleware));
+
+//redux saga: Funciones generadoras
+//Ejecutar middleware, al comienzo de todo se ejecuta.
+sagaMiddleware.run(funcionPrimaria);
 
 export default store;

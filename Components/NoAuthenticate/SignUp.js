@@ -5,15 +5,20 @@ import { connect } from 'react-redux';
 import SignUpForm from './Forms/SignUpForm';
 
 class SignUp extends Component {
-  render() {
 
-    //propiedad iyectada en el mapStateToProps
-    // console.log(this.props.numero);
+  registroDeUsuario = (values)=>{
+      // console.log(values);
+      //Funcion inyectada con el connect (dispatch)
+      //se ejecuta la función y se envían los valores
+      this.props.registro(values);
+  }
+
+  render() {
     const { navigation } = this.props;
 
     return (
       <View style={styles.container}>
-        <SignUpForm></SignUpForm>
+        <SignUpForm registro={this.registroDeUsuario} />
         {/* native input */}
         {/* <TextInput placeholder="Correo electronico" /> */}
         <Button
@@ -48,16 +53,12 @@ const mapStateToProps = (state) =>{
 };
 
 
-const mapDispatchToProps = (dispatch) =>{
-    return {
-        aumentar: ()=>{
-            //OBJECT CON TYPE
-            dispatch({
-                type: "AUMENTAR REDUCERPRUEBA"
-            });
-        }
-    }
-};
+const mapDispatchToProps = dispatch => ({
+    registro: (values)=>{
+        //OBJECT CON TYPE
+        dispatch({ type: "REGISTRO", datos: values});
+    },
+});
 
 //Así se integra la store, inyecta las propiedades al componente.
 export default connect(mapStateToProps,mapDispatchToProps)(SignUp);

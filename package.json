@@ -8,13 +8,14 @@
   },
   "dependencies": {
     "expo": "^32.0.0",
-    "firebase": "^5.8.4",
+    "firebase": "^5.8.5",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-navigation": "^1.0.0-beta.27",
     "react-redux": "^6.0.1",
     "redux": "^4.0.1",
-    "redux-form": "^8.1.0"
+    "redux-form": "^8.1.0",
+    "redux-saga": "^1.0.2"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0"
