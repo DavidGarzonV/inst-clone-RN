@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Button} from "react-native";
+import { autenticacion } from "../../Store/Servicios/Firebase";
 
 class Profile extends Component {
   render() {
@@ -9,6 +10,11 @@ class Profile extends Component {
         <Text> Profile </Text>
         <Button title="Publicacion" 
         onPress={ () => { navigation.navigate('Publicacion')} } />
+        <Button title="Cerrar sesión" 
+        onPress={ () => {
+              //Al cambiar el state renderiza nuevamente.
+               autenticacion.signOut()
+          }} />
       </View>
     );
   }

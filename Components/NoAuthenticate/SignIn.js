@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import SignInForm from "./Forms/SignInForm";
 import { connect } from 'react-redux';
+import { accionLogin } from '../../Store/Acciones';
 
 class SignIn extends Component {
   signInDeUsuario = (values) => {
@@ -44,7 +45,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     login: (datos) => {
-      dispatch({type:'LOGIN', datos })
+      dispatch(accionLogin(datos))
     }
   }
 }

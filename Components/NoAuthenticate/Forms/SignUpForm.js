@@ -82,7 +82,7 @@ const validate = values => {
 const SignUpForm = props => {
   // console.log("form");
   return (
-    <View>
+    <View style={styles.container}>
       {/* Field envia valor al store */}
       <Field name="nombre" component={fieldNombre} ph="nombre" />
       <Field name="correo" component={fieldNombre} ph="correo@correo.com" />
@@ -106,6 +106,9 @@ const SignUpForm = props => {
 };
 
 const styles = StyleSheet.create({
+  container:{
+    flex:3,
+  },
   textInput: {
     marginBottom: 16
   },

@@ -2,6 +2,7 @@
 //Call permite hacer una llamada y tomar valores.
 import { takeEvery, call } from 'redux-saga/effects';
 import { autenticacion, baseDeDatos } from "../Servicios/Firebase";
+import CONSTANTES from '../Constantes';
 //Redux saga permite la realización de funciones asincronas.
 
 
@@ -30,7 +31,7 @@ function* sagaRegistro(values) {
         const { datos: { nombre } } = values;
 
         yield call(registroEnBaseDeDatos, { uid, email, nombre });
-
+        console.log("Registro exitoso");
     } catch (error) {
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -59,8 +60,8 @@ export default function* funcionPrimaria() {
     //yield para ejecutar los efectos varias veces, y para poder ejecutar los efectos de redux saga
     //inyecta datos
     //take every escucha el dispatch
-    yield takeEvery('REGISTRO', sagaRegistro);
-    yield takeEvery('LOGIN', sagaLogin);
+    yield takeEvery(CONSTANTES.REGISTRO, sagaRegistro);
+    yield takeEvery(CONSTANTES.LOGIN, sagaLogin);
 
     // console.log('Desde nuestra función generadora');
 }
