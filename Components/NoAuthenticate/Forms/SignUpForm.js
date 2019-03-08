@@ -30,13 +30,13 @@ const fieldNombre = props => {
         }
         autoCapitalize="characters"
         secureTextEntry={
-          props.input.name == "password" || props.input.name == "confirmacion"? true : false
+          props.input.name == "password" || props.input.name == "confirmacion" ? true : false
         }
         //Actualiza las propiedades del componente en el store
         onBlur={props.input.onBlur}
       />
       <View style={styles.linea} />
-      {/* touched es cuando se envía, cambia a true */}
+      {/* touched es cuando se cambia, cambia a true */}
       {props.meta.touched && props.meta.error && (
         <Text style={styles.errors}>{props.meta.error}</Text>
       )}
@@ -44,9 +44,29 @@ const fieldNombre = props => {
   );
 };
 
-//Funcion para validar
-const validate = values => {
+//Simula la imagen para hacer la validación
+const fieldImagen = props => (
+  <View>
+    <View/>
+    {/* touched es cuando se cambia, cambia a true */}
+    {props.meta.touched && props.meta.error && 
+      <Text style={styles.errors}>{props.meta.error}</Text>
+    }
+  </View>
+);
+
+//La función solo se ejecuta cuando cambian los valores de los imputs, por ende se utiliza el on change y el on blur
+//estas funciones son de reduxform y le dice a validate que se cambió el valor
+//Funcion para validar, propiedades que se pasan al componente
+const validate = (values, props) => {
+  
   const errors = {};
+
+  //Esta validación se realiza al cargar la imagen, utilizando el blur, para que el validate detecte un cambio y vuelva a revisar, en este caso la imagen ya se encuentra en la store
+  if(!props.imagen){
+    errors.imagen = "La imagen es requerida";
+  }
+
   if (!values.nombre) {
     errors.nombre = "Requerido";
   } else if (values.nombre.length < 5) {
@@ -84,6 +104,7 @@ const SignUpForm = props => {
   return (
     <View style={styles.container}>
       {/* Field envia valor al store */}
+      <Field name='imagen' component={fieldImagen}></Field>
       <Field name="nombre" component={fieldNombre} ph="nombre" />
       <Field name="correo" component={fieldNombre} ph="correo@correo.com" />
       <Field name="password" component={fieldNombre} ph="******" />
@@ -92,22 +113,22 @@ const SignUpForm = props => {
         title="Registrar"
         //se envía a la función ubicada en SignUp. los values, funcion pasada por props.
         onPress={props.handleSubmit(props.registro,
-            // values => {
-              
-            //   //Si pasa la autenticación llega aqui
-            //   console.log(values, autenticacion);
-            
-            // }
+          // values => {
+
+          //   //Si pasa la autenticación llega aqui
+          //   console.log(values, autenticacion);
+
+          // }
         )
-      }
+        }
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container:{
-    flex:3,
+  container: {
+    flex: 3,
   },
   textInput: {
     marginBottom: 16
