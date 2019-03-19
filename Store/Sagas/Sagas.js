@@ -1,6 +1,6 @@
 //escucha todos los dispatch que se le proporcionan al middleware
 //Call permite hacer una llamada y tomar valores.
-import { takeEvery, call } from 'redux-saga/effects';
+import { takeEvery, call, select } from 'redux-saga/effects';
 import { autenticacion, baseDeDatos } from "../Servicios/Firebase";
 import CONSTANTES from '../Constantes';
 //Redux saga permite la realización de funciones asincronas.
@@ -12,25 +12,65 @@ const registroEnFirebase = values =>
         .then(success => success);
 
 //Registrar en bd.
-const registroEnBaseDeDatos = ({ uid, email, nombre }) =>
-    baseDeDatos.ref(`usuarios/${uid}`)
+const registroEnBaseDeDatos = ({ uid, email, nombre, fotoUrl }) =>
+    baseDeDatos
+        .ref(`usuarios/${uid}`)
         .set({
             nombre,
             email,
-            // profile_picture: imageUrl
+            fotoUrl
         });
 
+//Llamada a cloudinary
+const registroFotoCloudinary = ({ imagen }) =>{
+
+    const {uri, type} = imagen;
+    const splitName = uri.split('/');
+    //la funcion .pop elimina el ultimo elemento de un array y lo devuelve
+    const name = splitName.pop();
+    
+    const foto = {
+        uri,
+        type:'image/jpeg',
+        name,
+    };
+
+    const formImagen = new FormData();
+    formImagen.append("upload_preset",CONSTANTES.CLOUDINARY_PRESET);
+    formImagen.append("file",foto);
+   
+    //fetch realiza peticion http
+
+    return fetch(CONSTANTES.CLOUDINARY_NAME,{
+        method:"POST",
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        body:formImagen,
+    })
+    .then( response => response.json() );
+
+}
 
 function* sagaRegistro(values) {
     //el call pausa la ejecución hasta que se resuelva la funcion.
     try {
+        //cargar foto
+        //Se permite obtener del store la imagen
+        const imagen = yield select((state) => state.reducerImagenSignUp);
+
+        //Retorna información de la foto en cloudinary
+        const urlFoto = yield call(registroFotoCloudinary, imagen);
+
+        const fotoUrl = urlFoto.secure_url;
+
         const registro = yield call(registroEnFirebase, values.datos);
-        // console.log("reg", registro);
+
         const { user: { email, uid } } = registro;
         //destructuración de un objeto dentro de otro
         const { datos: { nombre } } = values;
 
-        yield call(registroEnBaseDeDatos, { uid, email, nombre });
+        yield call(registroEnBaseDeDatos, { uid, email, nombre, fotoUrl });
         console.log("Registro exitoso");
     } catch (error) {
         var errorCode = error.code;

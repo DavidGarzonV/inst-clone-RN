@@ -2,8 +2,7 @@ import { TabNavigator } from 'react-navigation';
 import { StackHome } from './StackHome';
 import { StackSearch } from './StackSearch';
 import { StackFollow } from './StackFollow';
-
-import Add from './Add';
+import { StackAdd } from './StackAdd';
 import Profile from './Profile';
 
 //Se cargan todos los screen al mismo tiempo
@@ -16,7 +15,7 @@ const RutasAutenticadas = TabNavigator(
             screen:StackSearch
         },
         Add:{
-            screen:Add
+            screen:StackAdd
         },
         Follow:{
             screen: StackFollow,

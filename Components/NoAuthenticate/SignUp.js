@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Button, TextInput } from "react-native";
+import { Text, View, StyleSheet, Button } from "react-native";
 //Permite integrar la store y el dispactch al componente
 import { connect } from 'react-redux';
 import SignUpForm from './Forms/SignUpForm';
 import { accionRegistro, accionCargarImagenSignUp, accionLimpiarImagenSignUp } from "../../Store/Acciones";
 import SeleccionarImagen from "../SeleccionarImagen";
-import CONSTANTES from "../../Store/Constantes";
-import { blur, change } from 'redux-form';
+import { blur } from 'redux-form';
 
 //Componente tiene accesso al store
 class SignUp extends Component {

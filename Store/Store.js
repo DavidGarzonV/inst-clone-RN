@@ -41,6 +41,19 @@ const reducerImagenSignUp = (state = { imagen:null }, action) =>{
     }
 }
 
+//dispatch para cargar imagen, y limpiar
+const reducerImagenPublicacion = (state = { imagen:null }, action) =>{
+    switch (action.type) {
+        case CONSTANTES.CARGAR_IMAGEN_PULICACION:
+            return { imagen: action.imagen };
+        case CONSTANTES.LIMPIAR_IMAGEN_PUBLICACION:
+            return { imagen: null };
+        default:
+            return state;
+    }
+}
+
+
 //Crear middleware
 const sagaMiddleware = createSagaMiddleware();
 
@@ -51,7 +64,8 @@ const reducers = combineReducers({
     //El redux form envía a su reducer los datos a cambiar del store (dispatch).
     form,
     reducerSesion,
-    reducerImagenSignUp
+    reducerImagenSignUp,
+    reducerImagenPublicacion
 });
 
 //Redux store

@@ -112,15 +112,7 @@ const SignUpForm = props => {
       <Button
         title="Registrar"
         //se envía a la función ubicada en SignUp. los values, funcion pasada por props.
-        onPress={props.handleSubmit(props.registro,
-          // values => {
-
-          //   //Si pasa la autenticación llega aqui
-          //   console.log(values, autenticacion);
-
-          // }
-        )
-        }
+        onPress={props.handleSubmit(props.registro)}
       />
     </View>
   );

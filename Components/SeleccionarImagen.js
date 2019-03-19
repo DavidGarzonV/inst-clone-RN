@@ -8,15 +8,15 @@ const SeleccionarImagen = (props)=>{
             allowsEditing: true,
             aspect: [4, 3],
         });
-
-        console.log(result);
-
+        // console.log(result);
         if (!result.cancelled) {
             // this.setState({ image: result });
             //propiedad que hace el dispatch, enviada desde SignUp
             props.cargar(result);
         }
     };
+    //Propiedad inyectada en seleccionar galería
+    const radius = {borderRadius: props.radius? 0 : 80 };
     
     return (
         <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }}>
@@ -26,9 +26,9 @@ const SeleccionarImagen = (props)=>{
                 {
                  props.imagen ? 
                     <Image source={ { uri: props.imagen.uri }} 
-                        style={ {width:160,height:160,borderRadius:80} } />:   
+                        style={ {width:160,height:160,radius} } />:
                     <Image source={require("../assets/sunset.jpg")} 
-                        style={ {width:160,height:160,borderRadius:80} } />
+                        style={ {width:160,height:160,radius} } />
                 }
             </TouchableOpacity>
         </View>
