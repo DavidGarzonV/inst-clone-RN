@@ -2,12 +2,18 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet,Button } from 'react-native';
 import SeleccionarImagen from '../SeleccionarImagen';
 import { connect } from 'react-redux';
-import { accionCargarImagenPublicacion } from '../../Store/Acciones';
+import { accionCargarImagenPublicacion, accionSubirPublicacion, accionLimpiarImagenPublicacion } from '../../Store/Acciones';
+import SeleccionarGaleriaForm from './SeleccionarGaleriaForm';
+import { blur } from 'redux-form';
 
 class SeleccionarGaleria extends Component {
     static navigationOptions = {
         tabBarVisible: false
     };
+
+    componentWillUnmount(){
+        this.props.limpiarImagen();
+    }
 
     render() {
         return (
@@ -19,13 +25,12 @@ class SeleccionarGaleria extends Component {
                     radius/>
                 </View>
                 <View style={styles.texto}>
-                    <Text> SeleccionarGaleria </Text>
-                </View>
-                <View style={styles.boton}>
-                    <Button title='Publicar'
-                    onPress={()=>{
-                        console.log("publicar");
-                    }}/>
+                    <SeleccionarGaleriaForm 
+                    imagen={this.props.imagen.imagen} 
+                    registro={(values)=>{
+                        // console.log(values);
+                        this.props.subirPublicacion(values);
+                    }} />
                 </View>
             </View>
         );
@@ -36,17 +41,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        // justifyContent: 'center',
     },
     imagen:{
         flex:2,
     },
     texto:{
         flex:2
-    },
-    boton:{
-        flex:1
     }
 });
 
@@ -59,7 +59,15 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         cargarImagen: (imagen) => {
-            dispatch(accionCargarImagenPublicacion(imagen))
+            dispatch(accionCargarImagenPublicacion(imagen)),
+            //Para simular que al enviar la imagen el campo imagen tenga algo también
+            dispatch(blur("SeleccionarGaleriaForm",'imagen',Date.now()))
+        },
+        subirPublicacion: (values) => {
+            dispatch(accionSubirPublicacion(values))
+        },
+        limpiarImagen: ()=>{
+            dispatch(accionLimpiarImagenPublicacion());
         }
     }
 }

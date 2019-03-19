@@ -24,7 +24,7 @@ const registroEnBaseDeDatos = ({ uid, email, nombre, fotoUrl }) =>
 //Llamada a cloudinary
 const registroFotoCloudinary = ({ imagen }) =>{
 
-    const {uri, type} = imagen;
+    const {uri} = imagen;
     const splitName = uri.split('/');
     //la funcion .pop elimina el ultimo elemento de un array y lo devuelve
     const name = splitName.pop();
@@ -51,7 +51,7 @@ const registroFotoCloudinary = ({ imagen }) =>{
     .then( response => response.json() );
 
 }
-
+//Registrar usuario
 function* sagaRegistro(values) {
     //el call pausa la ejecución hasta que se resuelva la funcion.
     try {
@@ -73,8 +73,8 @@ function* sagaRegistro(values) {
         yield call(registroEnBaseDeDatos, { uid, email, nombre, fotoUrl });
         console.log("Registro exitoso");
     } catch (error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        // var errorCode = error.code;
+        // var errorMessage = error.message;
         console.log(error);
     }
 }
@@ -88,7 +88,51 @@ function* sagaLogin(values) {
     // console.log("saga", values);
     try {
       const resultado = yield call(loginEnFirebase,values.datos);
-      console.log("res",resultado);
+      console.log(resultado);
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//Crea un nuevo registro en firebase con la publicacion
+const crearPublicacion = ({width,height,secure_url, uid}, texto = "") => 
+    baseDeDatos.ref('publicaciones/').push({
+        width,
+        height,
+        secure_url,
+        uid,
+        texto
+    })
+    .then(response => response );
+
+//Asociar publicacion al autor
+//Se crea el registro para el autor, y un registro con el id de la publicacion
+//[key] para que tome el valor de la variable como llave
+const asociarAutorPublicaciones = ( { key, uid } ) => 
+    baseDeDatos.ref(`autor-publicaciones/${uid}`)
+    .update({ [key]: true})
+    .then(response => response);
+
+function* sagaSubirPublicacion({values}){
+    try {
+        const imagen = yield select((state) => state.reducerImagenPublicacion);
+        const usuario = yield select((state) => state.reducerSesion);
+        const {uid} = usuario;
+
+        const resultCloudinary = yield call(registroFotoCloudinary, imagen);
+        console.log(resultCloudinary);
+
+        //Registrar en bd
+        const { width, height, secure_url } = resultCloudinary;
+        const parametrosImagen = { width, height, secure_url, uid };
+
+        const { key } = yield call(crearPublicacion, parametrosImagen, values.texto );
+        
+        const params = { key, uid };
+
+        const asociarPubAutor = yield call(asociarAutorPublicaciones, params);
+        console.log(asociarPubAutor);
 
     } catch (error) {
         console.log(error);
@@ -102,16 +146,7 @@ export default function* funcionPrimaria() {
     //take every escucha el dispatch
     yield takeEvery(CONSTANTES.REGISTRO, sagaRegistro);
     yield takeEvery(CONSTANTES.LOGIN, sagaLogin);
-
-    // console.log('Desde nuestra función generadora');
+    yield takeEvery(CONSTANTES.SUBIR_PUBLICACION, sagaSubirPublicacion);
 }
 
-//Se ejecuta por cada yield, validando el valor y la ejeecucion 
-//yield ES6: pausa la ejecucion y regresa o toma un valor.
-// function* funcionPrueba(){    
-//     yield 1000;
-//     yield 2000;
-// }
-// const miFuncion = funcionPrueba();
-// miFuncion.next();
-//crea objeto iterable
+//EL MIDDLEWARE SE EJECUTA ANTES DE ENVIAR AL STORE.
