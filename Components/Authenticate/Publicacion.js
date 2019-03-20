@@ -1,16 +1,37 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet, Button, Dimensions, Image } from "react-native";
 
 class Publicacion extends Component {
   render() {
-    const { navigation } = this.props;
+    const { navigation, item } = this.props;
+
+    //PUBLICACIÓN
+    //Ancho de la pantalla
+    const { width } = Dimensions.get('window');
+
+    //proporción para la altura de la imagen
+    const factor = item.width / width;
+    const height = item.height / factor;
+
     return (
-      <View style={styles.container}>
-        <Text> Publicacion </Text>
-        <Button title="Autor" 
+      <View>
+        <View>
+            <Text>{item.uid}</Text>
+        </View>
+        <Image
+          source={{ uri: item.secure_url }}
+          style={{ width, height }}
+        />
+        {/* Footer */}
+        <View>
+          <Text>Likes</Text>
+          <Text>Comentarios</Text>
+        </View>
+
+        {/* <Button title="Autor" 
           onPress={ () => { navigation.navigate('Autor') } } />
         <Button title="Comentarios" 
-          onPress={ () => { navigation.navigate('Comentarios') } } />
+          onPress={ () => { navigation.navigate('Comentarios') } } /> */}
       </View>
     );
   }

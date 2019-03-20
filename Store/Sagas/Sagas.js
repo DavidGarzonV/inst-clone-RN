@@ -1,8 +1,9 @@
 //escucha todos los dispatch que se le proporcionan al middleware
 //Call permite hacer una llamada y tomar valores.
-import { takeEvery, call, select } from 'redux-saga/effects';
+import { takeEvery, call, select, put } from 'redux-saga/effects';
 import { autenticacion, baseDeDatos } from "../Servicios/Firebase";
 import CONSTANTES from '../Constantes';
+import { accionAgregarPublicacionesStore } from '../Acciones';
 //Redux saga permite la realización de funciones asincronas.
 
 
@@ -139,6 +140,36 @@ function* sagaSubirPublicacion({values}){
     }
 }
 
+//Obtener todas las publicaciones
+const descargarPublicaciones = ()=> 
+    baseDeDatos.ref('publicaciones')
+    .once('value')
+    .then( (snapshot) => {
+        let publicaciones = [];
+
+        snapshot.forEach((childSnapshot)=>{
+            const key = childSnapshot.key;
+            let publicacion = childSnapshot.val();
+            publicacion.key = key;
+            publicaciones.push(publicacion);
+        });
+
+        return publicaciones;
+    });
+
+
+//Obtiene las publicaciones de la bd y las almacena en la store
+function* sagaDescargarPublicaciones(){
+    try {
+        const publicaciones = yield call(descargarPublicaciones);
+        //Guardar publicaciones en la store "dispatch"
+        yield put(accionAgregarPublicacionesStore(publicaciones));
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 //funcion generadora
 export default function* funcionPrimaria() {
     //yield para ejecutar los efectos varias veces, y para poder ejecutar los efectos de redux saga
@@ -147,6 +178,7 @@ export default function* funcionPrimaria() {
     yield takeEvery(CONSTANTES.REGISTRO, sagaRegistro);
     yield takeEvery(CONSTANTES.LOGIN, sagaLogin);
     yield takeEvery(CONSTANTES.SUBIR_PUBLICACION, sagaSubirPublicacion);
+    yield takeEvery(CONSTANTES.DESCARGAR_PUBLICACIONES, sagaDescargarPublicaciones);
 }
 
 //EL MIDDLEWARE SE EJECUTA ANTES DE ENVIAR AL STORE.

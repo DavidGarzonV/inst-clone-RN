@@ -7,14 +7,13 @@ import { RutasAutenticadas } from './Components/Authenticate/RutasAutenticadas';
 import Store from './Store/Store';
 import Seleccion from "./Seleccion";
 
-console.disableYellowBox = ['Remote debugger'];
-
 export default class App extends React.Component {
   constructor(){
     super();
     this.state ={
       nombre :"instragram-clone"
     }
+    console.disableYellowBox = ['Remote debugger','Setting a timer'];
   }
   render() {
     return (

@@ -53,6 +53,15 @@ const reducerImagenPublicacion = (state = { imagen:null }, action) =>{
     }
 }
 
+const reducerPublicacionesDescargadas = (state = [], action ) => {
+    switch (action.type) {
+        case CONSTANTES.AGREGAR_PUBLICACIONES_STORE:
+            //Devuelve cada uno de los elementos en totalidad como array
+            return [...state, ...action.publicaciones];
+        default:
+            return state;
+    }
+}
 
 //Crear middleware
 const sagaMiddleware = createSagaMiddleware();
@@ -65,7 +74,8 @@ const reducers = combineReducers({
     form,
     reducerSesion,
     reducerImagenSignUp,
-    reducerImagenPublicacion
+    reducerImagenPublicacion,
+    reducerPublicacionesDescargadas
 });
 
 //Redux store
