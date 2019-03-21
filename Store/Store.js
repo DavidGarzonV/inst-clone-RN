@@ -63,19 +63,45 @@ const reducerPublicacionesDescargadas = (state = [], action ) => {
     }
 }
 
+
+const reducerAutoresDescargados = (state = [], action ) => {
+    switch (action.type) {
+        case CONSTANTES.AGREGAR_AUTORES_STORE:
+            //Devuelve cada uno de los elementos en totalidad como array
+            return [...state, ...action.autores];
+        default:
+            return state;
+    }
+}
+
+//reducer para saber el estado del subir una publicacion
+const reducerExitoSubirPublicacion = (state = { estado: null }, action)=>{
+    switch (action.type) {
+        case CONSTANTES.EXITO_SUBIR_PUBLICACION:
+            return { estado: 'EXITO' };
+        case CONSTANTES.ERROR_SUBIR_PUBLICACION:
+            return { estado: 'ERROR' };
+        case CONSTANTES.LIMPIAR_SUBIR_PUBLICACION:
+            return { estado: null };
+        default:
+            return state;
+    }
+}
+
 //Crear middleware
 const sagaMiddleware = createSagaMiddleware();
 
 //Produce objeto con resultado de reducers, creando arbol de states.
 const reducers = combineReducers({
-    // reducerPrueba: reducerPrueba
     reducerPrueba,
     //El redux form envía a su reducer los datos a cambiar del store (dispatch).
     form,
     reducerSesion,
     reducerImagenSignUp,
     reducerImagenPublicacion,
-    reducerPublicacionesDescargadas
+    reducerPublicacionesDescargadas,
+    reducerAutoresDescargados,
+    reducerExitoSubirPublicacion,
 });
 
 //Redux store

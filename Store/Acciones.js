@@ -51,3 +51,20 @@ export const accionAgregarPublicacionesStore = (publicaciones) =>({
     type: CONSTANTES.AGREGAR_PUBLICACIONES_STORE,
     publicaciones
 });
+
+export const accionagregarAutoresStore = (autores) =>({
+    type: CONSTANTES.AGREGAR_AUTORES_STORE,
+    autores
+});
+
+export const accionExitoSubirPublicacion = () =>({
+    type: CONSTANTES.EXITO_SUBIR_PUBLICACION
+});
+
+export const accionErrorSubirPublicacion = () =>({
+    type: CONSTANTES.ERROR_SUBIR_PUBLICACION
+});
+
+export const accionLimpiarSubirPublicacion = () =>({
+    type: CONSTANTES.LIMPIAR_SUBIR_PUBLICACION
+});

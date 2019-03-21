@@ -1,9 +1,9 @@
 //escucha todos los dispatch que se le proporcionan al middleware
 //Call permite hacer una llamada y tomar valores.
-import { takeEvery, call, select, put } from 'redux-saga/effects';
+import { takeEvery, call, select, put, all } from 'redux-saga/effects';
 import { autenticacion, baseDeDatos } from "../Servicios/Firebase";
 import CONSTANTES from '../Constantes';
-import { accionAgregarPublicacionesStore } from '../Acciones';
+import { accionAgregarPublicacionesStore, accionagregarAutoresStore, accionExitoSubirPublicacion, accionErrorSubirPublicacion } from '../Acciones';
 //Redux saga permite la realización de funciones asincronas.
 
 
@@ -122,21 +122,28 @@ function* sagaSubirPublicacion({values}){
         const {uid} = usuario;
 
         const resultCloudinary = yield call(registroFotoCloudinary, imagen);
-        console.log(resultCloudinary);
+        // console.log(resultCloudinary);
 
         //Registrar en bd
         const { width, height, secure_url } = resultCloudinary;
         const parametrosImagen = { width, height, secure_url, uid };
 
-        const { key } = yield call(crearPublicacion, parametrosImagen, values.texto );
+        const { key } = yield call(
+            crearPublicacion, 
+            parametrosImagen, 
+            values.texto 
+        );
         
         const params = { key, uid };
 
         const asociarPubAutor = yield call(asociarAutorPublicaciones, params);
-        console.log(asociarPubAutor);
-
+        // console.log(asociarPubAutor);
+        
+        //Informa al store que la hubo éxito al subir
+        yield put(accionExitoSubirPublicacion());
     } catch (error) {
         console.log(error);
+        yield put(accionErrorSubirPublicacion());
     }
 }
 
@@ -157,13 +164,25 @@ const descargarPublicaciones = ()=>
         return publicaciones;
     });
 
+//Obtener el autor de una publicacion
+const descargarAutor = (uid) => 
+    baseDeDatos.ref(`usuarios/${uid}`)
+    .once('value')
+    .then(response => response.val());
 
 //Obtiene las publicaciones de la bd y las almacena en la store
 function* sagaDescargarPublicaciones(){
     try {
         const publicaciones = yield call(descargarPublicaciones);
+
+        //Map itera sobre todo y devuelve, en este caso un objeto que retorna el call
+        //all va a detener la ejecucion cuando se resuelvan todos los efectos realizados en el map "calls"
+        const autores = yield all( publicaciones.map(publicacion => call(descargarAutor, publicacion.uid)) );
+
         //Guardar publicaciones en la store "dispatch"
         yield put(accionAgregarPublicacionesStore(publicaciones));
+        //Guardar autores en la store
+        yield put(accionagregarAutoresStore(autores));
 
     } catch (error) {
         console.log(error);

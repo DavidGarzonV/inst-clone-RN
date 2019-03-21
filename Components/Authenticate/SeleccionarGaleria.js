@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet,Button } from 'react-native';
+import { Text, View, StyleSheet,Button, Alert } from 'react-native';
 import SeleccionarImagen from '../SeleccionarImagen';
 import { connect } from 'react-redux';
-import { accionCargarImagenPublicacion, accionSubirPublicacion, accionLimpiarImagenPublicacion } from '../../Store/Acciones';
+import { accionCargarImagenPublicacion, accionSubirPublicacion, accionLimpiarImagenPublicacion, accionLimpiarSubirPublicacion } from '../../Store/Acciones';
 import SeleccionarGaleriaForm from './SeleccionarGaleriaForm';
 import { blur } from 'redux-form';
 
@@ -13,6 +13,32 @@ class SeleccionarGaleria extends Component {
 
     componentWillUnmount(){
         this.props.limpiarImagen();
+    }
+
+    //Cuando cambian las props
+    componentWillReceiveProps(nextProps){
+        //Si la propiedad actual cambia
+        if(this.props.estadoSubirPublicacion !== nextProps.estadoSubirPublicacion){
+            switch (nextProps.estadoSubirPublicacion) {
+                case 'EXITO':
+                    Alert.alert("Éxito",'La publicación fue realizada correctamente',[{
+                        text: "Ok",
+                        onPress: ()=>{
+                            this.props.limpiarEstadoPublicacion();
+                            this.props.navigation.goBack();
+                        }
+                    }]);
+                case 'ERROR':
+                    Alert.alert("Error",'La publicación no se realizó, intente nuevamente..',[{
+                        text: "Confirmar",
+                        onPress: ()=>{
+                            this.props.limpiarEstadoPublicacion();
+                        }
+                    }]);
+                default:
+                    break;
+            }
+        }
     }
 
     render() {
@@ -52,7 +78,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        imagen: state.reducerImagenPublicacion
+        imagen: state.reducerImagenPublicacion,
+        estadoSubirPublicacion: state.reducerExitoSubirPublicacion.estado
     }
 }
 
@@ -68,6 +95,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         limpiarImagen: ()=>{
             dispatch(accionLimpiarImagenPublicacion());
+        },
+        limpiarEstadoPublicacion: ()=>{
+            dispatch(accionLimpiarSubirPublicacion());
         }
     }
 }
