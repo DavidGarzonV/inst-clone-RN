@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { autenticacion } from './Store/Servicios/Firebase';
 import { RutasNoAutenticadas } from './Components/NoAuthenticate/RutasNoAutenticadas';
 import { RutasAutenticadas } from './Components/Authenticate/RutasAutenticadas';
-import { accionEstablecerSesion, accionCerrarSesion } from './Store/Acciones';
+import { accionEstablecerSesion, accionCerrarSesion, accionVerifyLogin } from './Store/Acciones';
 
 class Seleccion extends Component {
     componentDidMount(){
@@ -15,7 +15,7 @@ class Seleccion extends Component {
         return (
             <View style={styles.container}>
                 {
-                    this.props.usuario ? <RutasAutenticadas/> : <RutasNoAutenticadas />
+                     this.props.sesion ? <RutasAutenticadas/> : <RutasNoAutenticadas />
                 }
             </View>
         );
@@ -31,22 +31,24 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        usuario: state.reducerSesion
+        usuario: state.reducerSesion,
+        sesion: state.reducerVerifyLogin
     }
 }
 //Se accede a la store
 const mapDispatchToProps = (dispatch) => {
     return {
         autenticacion: () => {
-            autenticacion.onAuthStateChanged(function(usuario){
-                if(usuario){
-                    console.log(usuario.toJSON());
-                    dispatch(accionEstablecerSesion(usuario));
-                }else{
-                    console.log("No existe sesión");
-                    dispatch(accionCerrarSesion());
-                }
-            });
+            dispatch(accionVerifyLogin());
+            // autenticacion.onAuthStateChanged(function(usuario){
+            //     if(usuario){
+            //         console.log(usuario.toJSON());
+            //         dispatch(accionEstablecerSesion(usuario));
+            //     }else{
+            //         console.log("No existe sesión");
+            //         dispatch(accionCerrarSesion());
+            //     }
+            // });
         }
     }
 }

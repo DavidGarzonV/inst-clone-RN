@@ -18,16 +18,16 @@ const reducerPrueba = (state = [0], action) => {
     }
 };
 
-const reducerSesion =(state=null,action)=>{
-    switch (action.type) {
-        case CONSTANTES.ESTABLECER_SESION:
-            return {...action.usuario};
-        case CONSTANTES.CERRAR_SESION:
-            return null;
-        default:
-            return state;
-    }
-}
+// const reducerSesion =(state=null,action)=>{
+//     switch (action.type) {
+//         case CONSTANTES.ESTABLECER_SESION:
+//             return {...action.usuario};
+//         case CONSTANTES.CERRAR_SESION:
+//             return null;
+//         default:
+//             return state;
+//     }
+// }
 
 //dispatch para cargar imagen, y limpiar
 const reducerImagenSignUp = (state = { imagen:null }, action) =>{
@@ -88,6 +88,17 @@ const reducerExitoSubirPublicacion = (state = { estado: null }, action)=>{
     }
 }
 
+const reducerVerifyLogin = (state = null , action) =>{
+    switch (action.type) {
+        case CONSTANTES.SEND_SESSION:
+           return action.sesion;
+        case CONSTANTES.CLEAR_SESSION:
+           return state;
+        default:
+            return state;
+    }
+}
+
 //Crear middleware
 const sagaMiddleware = createSagaMiddleware();
 
@@ -96,12 +107,13 @@ const reducers = combineReducers({
     reducerPrueba,
     //El redux form envía a su reducer los datos a cambiar del store (dispatch).
     form,
-    reducerSesion,
+    // reducerSesion,
     reducerImagenSignUp,
     reducerImagenPublicacion,
     reducerPublicacionesDescargadas,
     reducerAutoresDescargados,
     reducerExitoSubirPublicacion,
+    reducerVerifyLogin
 });
 
 //Redux store

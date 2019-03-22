@@ -68,3 +68,16 @@ export const accionErrorSubirPublicacion = () =>({
 export const accionLimpiarSubirPublicacion = () =>({
     type: CONSTANTES.LIMPIAR_SUBIR_PUBLICACION
 });
+
+export const accionVerifyLogin = () =>({
+    type: CONSTANTES.VERIFY_LOGIN
+});
+
+export const accionSendSession = (sesion) =>({
+    type: CONSTANTES.SEND_SESSION,
+    sesion
+});
+
+export const accionLimpiarSession = (sesion) =>({
+    type: CONSTANTES.CLEAR_SESSION
+});

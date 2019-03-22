@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Button} from "react-native";
+import { Text, View, StyleSheet, Button, AsyncStorage} from "react-native";
 import { autenticacion } from "../../Store/Servicios/Firebase";
 
 class Profile extends Component {
@@ -13,8 +13,9 @@ class Profile extends Component {
         <Button title="Cerrar sesión" 
         onPress={ () => {
               //Al cambiar el state renderiza nuevamente.
-               autenticacion.signOut()
-          }} />
+              autenticacion.signOut();
+              AsyncStorage.removeItem('login');
+        }} />
       </View>
     );
   }
